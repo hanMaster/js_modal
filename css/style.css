@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap');
+
+body {
+    font-family: "IBM Plex Sans", sans-serif;
+    font-size: 1rem;
+
+    padding: 0;
+    margin: 0;
+}
+
+.container {
+    width: 768px;
+    margin: 0 auto;
+}
+
+.hmodal {
+}
+
+.hmodal.open .modal-overlay,
+.hmodal.open .modal-window {
+    opacity: 1;
+    z-index: 1000;
+}
+
+.hmodal.hiding .modal-overlay,
+.hmodal.hiding .modal-window {
+    opacity: 1;
+    z-index: 1000;
+}
+
+.hmodal.open .modal-window {
+    transform: translateY(100px);
+}
+
+.hmodal.open .modal-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.hmodal.hiding .modal-window {
+    transform: translateY(-200px);
+}
+
+.hmodal.hiding .modal-overlay {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.modal-overlay, .modal-window {
+    opacity: 0;
+    z-index: -1;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0);
+    transition: background-color .2s ease-in;
+}
+
+.modal-window {
+    /*width: 500px;*/
+    border-radius: 5px;
+    background-color: aliceblue;
+    margin: 0 auto;
+    position: relative;
+    -webkit-box-shadow: 9px 6px 18px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 9px 6px 18px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 9px 6px 18px 0px rgba(0, 0, 0, 0.75);
+
+    transform: translateY(-200px);
+    transition: transform .2s ease-in;
+}
+
+.modal-header {
+    padding: 5px 10px;
+    border-bottom: 1px solid #dddddd;
+}
+
+.modal-close {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    cursor: pointer;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+}
+
+.modal-body {
+    padding: 10px;
+    color: #333333;
+}
+
+.modal-footer {
+    padding: 10px 10px;
+    border-top: 1px solid #dddddd;
+    text-align: right;
+}
+
+
+.btn {
+    border: none;
+    border-radius: 3px;
+    padding: 5px 10px;
+}
+
+.btn-primary {
+    color: #ffffff;
+    background-color: cornflowerblue;
+}
+
+.btn-primary:hover {
+    background-color: #6574e4;
+}
+
+.btn-secondary {
+    color: #333333;
+    background-color: #eeeeee;
+}
+
+.btn-secondary:hover {
+    background-color: #bbbbbb;
+}
