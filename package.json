@@ -1,0 +1,26 @@
+{
+  "name": "js_modal",
+  "version": "1.0.0",
+  "description": "Vanilla JavaScript modal plugin",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hanMaster/js_modal.git"
+  },
+  "keywords": [
+    "javascript",
+    "modal"
+  ],
+  "author": "hanMaster",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hanMaster/js_modal/issues"
+  },
+  "homepage": "https://github.com/hanMaster/js_modal#readme",
+  "devDependencies": {
+    "prettier": "^1.19.1"
+  }
+}
