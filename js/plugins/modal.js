@@ -95,17 +95,18 @@ $.modal = function(options) {
       body.innerHTML = content;
     },
     onClose(func) {
-      modal.onClose = func;
+      if (func) modal.onClose = func;
     },
     onOpen(func) {
-      modal.onOpen = func;
+      if (func) modal.onOpen = func;
     },
   };
 
   const beforeClose = () => {
-    const permit = Math.random() > 0.5;
-    console.log('Permit', permit);
-    return permit;
+    // const permit = Math.random() > 0.5;
+    // console.log('Permit', permit);
+    // return permit;
+    return true
   };
 
   const closeListener = e => {

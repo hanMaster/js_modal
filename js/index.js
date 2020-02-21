@@ -22,15 +22,30 @@ const fruits = [
   },
 ];
 
-const showPrice = id => {
-  console.log(id);
-};
+window.onload = () => {
+  const modal = $.modal({
+    title: 'Фруктовый магазин',
+    content: 'фрукты',
+    width: '400px',
+    closable: true,
+    footerButtons: [
+      {
+        text: 'Ok',
+        type: 'primary',
+        handler: () => {
+          modal.close();
+        },
+      },
+    ],
+  });
 
-const generateGoodsList = () => {
-  const goods = document.getElementById('goods');
-  fruits.forEach(fruit => {
-    const card = `
-    <div class="card">
+  const confirm = $.confirm({});
+
+  const generateGoodsList = () => {
+    const goods = document.getElementById('goods');
+    fruits.forEach(fruit => {
+      const card = `
+    <div id="fruit${fruit.id}" class="card">
       <img
         src="${fruit.img}"
         class="card-img-top"
@@ -42,59 +57,41 @@ const generateGoodsList = () => {
       </div>
     </div>
     `;
-    goods.insertAdjacentHTML('beforeend', card);
-    const buttons = goods.querySelector(`#buttons${fruit.id}`);
-    const btn = document.createElement('a');
-    btn.innerText = 'Посмотреть цену';
-    btn.classList.add('btn');
-    btn.classList.add('btn-primary');
-    btn.onclick = () => showPrice(fruit.id);
-    buttons.appendChild(btn);
-    const btnDanger = document.createElement('a');
-    btnDanger.innerText = 'Удалить';
-    btnDanger.classList.add('btn');
-    btnDanger.classList.add('btn-danger');
-    btnDanger.onclick = () => showPrice('delete', fruit.id);
-    buttons.appendChild(btnDanger);
-  });
-};
-
-window.onload = () => {
-  const modal = $.modal({
-    title: 'hello modal',
-    content:
-      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. ' +
-      'Ab deserunt eius enim explicabo fugit porro praesentium quibusdam quidem rem soluta?',
-    width: '400px',
-    closable: true,
-    footerButtons: [
-      {
-        text: 'Ok',
-        type: 'primary',
-        handler: () => {
-          console.log('ok');
-          modal.close();
-        },
-      },
-      {
-        text: 'Cancel',
-        type: 'secondary',
-        handler: () => {
-          console.log('cancel');
-          modal.close();
-        },
-      },
-    ],
-  });
-
-  modal.onOpen(() => {
-    console.log('Open modal!!!');
-  });
-
-  modal.onClose(() => {
-    console.log('Closing modal!!!');
-  });
+      goods.insertAdjacentHTML('beforeend', card);
+      const buttons = goods.querySelector(`#buttons${fruit.id}`);
+      const btn = document.createElement('a');
+      btn.innerText = 'Посмотреть цену';
+      btn.classList.add('btn');
+      btn.classList.add('btn-primary');
+      btn.onclick = () => showPrice(fruit.id);
+      buttons.appendChild(btn);
+      const btnDanger = document.createElement('a');
+      btnDanger.innerText = 'Удалить';
+      btnDanger.classList.add('btn');
+      btnDanger.classList.add('btn-danger');
+      btnDanger.onclick = () => deleteCard(fruit.id);
+      buttons.appendChild(btnDanger);
+    });
+  };
 
   //  generate goodsList
   generateGoodsList();
+
+  const showPrice = id => {
+    const fruit = fruits.find(item => item.id === id);
+    modal.setContent(`<h5>${fruit.title}</h5> <h2>Цена: ${fruit.price} руб.</h2>`);
+    modal.open();
+  };
+
+
+  const deleteCard = async id => {
+    const fruit = fruits.find(item => item.id === id);
+    confirm.setTitle('Удаление карточки товара');
+    confirm.setContent(`<p>Вы действительно хотите удалить карточку?${fruit.title}</p>`);
+    const res = await confirm.open();
+    if (res) {
+      const node = document.getElementById(`fruit${id}`);
+      node.parentNode.removeChild(node);
+    }
+  };
 };
