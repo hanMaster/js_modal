@@ -1,23 +1,35 @@
-function _createModal(options) {
+const renderFooter = (footerButtons = []) => {
+  const footer = document.createElement('div');
+  footer.classList.add('modal-footer');
+  footerButtons.map(button => {
+    const btn = document.createElement('button');
+    btn.innerText = button.text;
+    btn.classList.add('btn');
+    btn.classList.add(`btn-${button.type}`);
+    btn.onclick = button.handler;
+    footer.appendChild(btn);
+  });
+  return footer;
+};
+
+function _createModal({ title, width, content, closable, footerButtons }) {
+  const MODAL_WIDTH = '400px';
   let html = `
-    <div id="mo" class="modal-overlay">
-      <div id="mw" class="modal-window" style="width: ${options.width}">
+    <div class="modal-overlay" data-close="1">
+      <div id="mw" class="modal-window" style="width: ${width || MODAL_WIDTH}">
+      <div class="modal-band"></div>
         <div class="modal-header">
             <span class="modal-title">
-                ${options.title}
-            </span>`;
-
-  if (options.closable) {
-    html += `<span id="x" class="modal-close">&times;</span>`;
-  }
-
-  html += `</div>
-        <div id="mb" class="modal-body">
-            ${options.content}
+                ${title || 'Modal title'}
+            </span>
+            ${
+              closable
+                ? `<span class="modal-close" data-close="1">&times;</span>`
+                : ''
+            }
         </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary animated infinite heartBeat delay-2s">Ok</button>
-            <button class="btn btn-secondary" id="cancel">Cancel</buttonclass>
+        <div id="mb" class="modal-body">
+            ${content || ''}
         </div>
       </div>
     </div>
@@ -26,7 +38,11 @@ function _createModal(options) {
   const modal = document.createElement('div');
   modal.classList.add('hmodal');
   modal.insertAdjacentHTML('afterbegin', html);
+  const footer = renderFooter(footerButtons);
+
   document.body.appendChild(modal);
+  const body = modal.querySelector('#mb');
+  body.parentNode.insertBefore(footer, body.nextSibling);
 
   return modal;
 }
@@ -49,6 +65,7 @@ function _createModal(options) {
 $.modal = function(options) {
   const ANIMATION_SPEED = 200;
   let closing = false;
+  let destroyed = false;
 
   const modal$ = _createModal(options);
 
@@ -61,46 +78,14 @@ $.modal = function(options) {
       modal$.classList.remove('hiding');
       closing = false;
     }, ANIMATION_SPEED);
-    onClose();
+    modal.onClose();
   };
 
-  const fnBlur = e => {
-    const outElement = document.getElementById('mw');
-    let targetElement = e.target;
-
-    do {
-      if (targetElement === outElement) {
-        return;
-      }
-      targetElement = targetElement.parentNode;
-    } while (targetElement);
-
-    fnClose();
-  };
-
-  const onOpen = () => {
-    console.log('Open event handler');
-  };
-
-  const beforeClose = () => {
-    const permit = Math.random() > 0.5;
-    console.log('Permit', permit);
-    return permit;
-  };
-
-  const onClose = () => {
-    console.log('Close event handler');
-  };
-
-  document.querySelector('#x').addEventListener('click', fnClose);
-  document.querySelector('#cancel').addEventListener('click', fnClose);
-
-  document.querySelector('#mo').addEventListener('click', e => fnBlur(e));
-
-  return {
+  const modal = {
     open() {
+      if (destroyed) return;
       !closing && modal$.classList.add('open');
-      onOpen();
+      modal.onOpen();
     },
     close() {
       fnClose();
@@ -109,9 +94,39 @@ $.modal = function(options) {
       const body = document.getElementById('mb');
       body.innerHTML = content;
     },
+    onClose(func) {
+      modal.onClose = func;
+    },
+    onOpen(func) {
+      modal.onOpen = func;
+    },
+  };
+
+  const beforeClose = () => {
+    const permit = Math.random() > 0.5;
+    console.log('Permit', permit);
+    return permit;
+  };
+
+  const closeListener = e => {
+    if (e.target.dataset.close) {
+      fnClose();
+    }
+  };
+
+  document
+    .querySelector('[data-close]')
+    .addEventListener('click', closeListener);
+
+  return {
+    ...modal,
     destroy() {
-      document.querySelector('#mo').removeEventListener('click', fnClose);
-      document.querySelector('#x').removeEventListener('click', fnClose);
+      console.log('destroy modal in progress');
+      document
+        .querySelector('[data-close]')
+        .removeEventListener('click', closeListener);
+      document.body.removeChild(modal$);
+      destroyed = true;
     },
   };
 };
